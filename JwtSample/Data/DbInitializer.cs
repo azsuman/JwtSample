@@ -3,19 +3,28 @@ using static JwtSample.Common.MOneCrypto;
 
 namespace JwtSample.Data;
 
-public static class SeedData
+public static class DbInitializer
 {
-    public static void AddUsers(this WebApplication app)
+    public static void SeedDefaultUsers(this WebApplication app)
     {
         var scope = app.Services.CreateScope();
-        var dataContext = scope.ServiceProvider.GetService<DataContext>();
 
-        dataContext?.AddRange(GetUsers());
+        using var dataContext = scope.ServiceProvider.GetService<DataContext>();
+        
+        if (dataContext != null)
+        {
+            dataContext.Database.EnsureCreated();
 
-        dataContext?.SaveChanges();
+            if (!dataContext.Users.Any())
+            {
+                dataContext.AddRange(DefaultUsers());
+
+                dataContext?.SaveChanges();
+            }
+        }
     }
 
-    private static List<User> GetUsers()
+    private static List<User> DefaultUsers()
     {
         CreatePasswordHash("@bc123", out byte[] passwordHash, out byte[] passwordSalt);
 

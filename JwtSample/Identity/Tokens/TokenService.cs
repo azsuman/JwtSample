@@ -63,9 +63,16 @@ internal sealed class TokenService : ITokenService
 
             return await GenerateTokensAndUpdateUser(user, ipAddress);
         }
-        user.FailedLoginCount++;
+
+        if (++user.FailedLoginCount >= _securitySettings.MaximumPasswordFailure)
+        {
+            user.IsLockedOut = true;
+            user.DateLockedout = DateTime.Now;
+        }
+
         _dataContext.Users.Update(user);
         _ = await _dataContext.SaveChangesAsync();
+
         throw new InvalidUsernamePasswordException();
     }
 

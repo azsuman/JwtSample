@@ -10,9 +10,9 @@ namespace JwtSample.Identity.Users;
 
 internal sealed class UserService : IUserService
 {
-    private readonly DataContext _dataContext;
+    private readonly Data.DataContext _dataContext;
 
-    public UserService(DataContext dataContext)
+    public UserService(Data.DataContext dataContext)
     {
         _dataContext = dataContext;
     }
@@ -21,7 +21,7 @@ internal sealed class UserService : IUserService
     {
         if (await _dataContext.Users.FindAsync(request.UserName) is not null)
         {
-            throw new UserAlreadyExistsException();
+            throw new UserAlreadyExistsException(request.UserName);
         }
 
         CreatePasswordHash(request.Password, out byte[] passwordHash, out byte[] passwordSalt);

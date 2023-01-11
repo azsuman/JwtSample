@@ -23,7 +23,11 @@ try
     builder.Services.AddJwtAuth();
     builder.Services.AddExceptionMiddleware();
     builder.Services.AddOpenApiDocumentation(builder.Configuration);
-    builder.Services.AddDbContext<DataContext>(options => options.UseInMemoryDatabase("SampleJwt"));
+    builder.Services.AddDbContext<DataContext>(options => 
+    {
+        options.UseSqlServer(builder.Configuration.GetConnectionString("JwtSample"));
+    });
+    builder.Services.AddRouting(options => options.LowercaseUrls = true);
     builder.Services.AddServices();
 
     var app = builder.Build();
@@ -32,7 +36,7 @@ try
     app.UseAuthentication();
     app.UseAuthorization();
     app.UseOpenApiDocumentation();
-    app.AddUsers();
+    app.SeedDefaultUsers();
     app.MapControllers().RequireAuthorization();
 
     app.Run();

@@ -4,7 +4,7 @@ namespace JwtSample.Exceptions;
 
 public class UserNotFoundException : JwtSampleException
 {
-    public UserNotFoundException() : base("User Not Found", HttpStatusCode.NotFound)
+    public UserNotFoundException() : base("User not found.", HttpStatusCode.NotFound)
     {
     }
 }

@@ -10,35 +10,38 @@ internal static class Startup
     internal static IServiceCollection AddOpenApiDocumentation(this IServiceCollection services, IConfiguration config)
     {
         _settings = config.GetSection(nameof(SwaggerSettings)).Get<SwaggerSettings>();
-        services.AddEndpointsApiExplorer();
 
-        _ = services.AddOpenApiDocument((document, serviceProvider) =>
+        if (_settings?.Enable ?? false)
         {
-            document.PostProcess = doc =>
+            services.AddEndpointsApiExplorer();
+            _ = services.AddOpenApiDocument((document, serviceProvider) =>
             {
-                doc.Info.Title = _settings.Title;
-                doc.Info.Version = _settings.Version;
-                doc.Info.Description = _settings.Description;
-                doc.Info.Contact = new()
+                document.PostProcess = doc =>
                 {
-                    Name = _settings.ContactName,
-                    Email = _settings.ContactEmail,
-                    Url = _settings.ContactUrl
+                    doc.Info.Title = _settings.Title;
+                    doc.Info.Version = _settings.Version;
+                    doc.Info.Description = _settings.Description;
+                    doc.Info.Contact = new()
+                    {
+                        Name = _settings.ContactName,
+                        Email = _settings.ContactEmail,
+                        Url = _settings.ContactUrl
+                    };
                 };
-            };
 
-            _ = document.AddSecurity(JwtBearerDefaults.AuthenticationScheme, new OpenApiSecurityScheme
-            {
-                Name = "Authorization",
-                Description = "Input Bearer token into the textbox: {JWT token}.",
-                In = OpenApiSecurityApiKeyLocation.Header,
-                Type = OpenApiSecuritySchemeType.Http,
-                Scheme = JwtBearerDefaults.AuthenticationScheme,
-                BearerFormat = "JWT",
+                _ = document.AddSecurity(JwtBearerDefaults.AuthenticationScheme, new OpenApiSecurityScheme
+                {
+                    Name = "Authorization",
+                    Description = "Input Bearer token into the textbox: {JWT token}.",
+                    In = OpenApiSecurityApiKeyLocation.Header,
+                    Type = OpenApiSecuritySchemeType.Http,
+                    Scheme = JwtBearerDefaults.AuthenticationScheme,
+                    BearerFormat = "JWT",
+                });
+
+                document.OperationProcessors.Add(new AuthOperationProcessor());
             });
-
-            document.OperationProcessors.Add(new AuthOperationProcessor());
-        });
+        }
 
         return services;
     }

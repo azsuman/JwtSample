@@ -4,7 +4,7 @@ namespace JwtSample.Exceptions;
 
 public class UserAlreadyExistsException : JwtSampleException
 {
-    public UserAlreadyExistsException() : base("Username already exists", HttpStatusCode.Conflict)
+    public UserAlreadyExistsException(string username) : base($"Username '{username}' is not available.", HttpStatusCode.Conflict)
     {
     }
 }

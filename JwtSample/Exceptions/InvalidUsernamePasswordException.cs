@@ -4,7 +4,7 @@ namespace JwtSample.Exceptions;
 
 public class InvalidUsernamePasswordException : JwtSampleException
 {
-    public InvalidUsernamePasswordException() : base("Invalid Username or Password.", HttpStatusCode.Unauthorized)
+    public InvalidUsernamePasswordException() : base("Invalid username or password.", HttpStatusCode.Unauthorized)
     {
     }
 }
