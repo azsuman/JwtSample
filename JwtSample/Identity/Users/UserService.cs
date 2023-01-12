@@ -10,9 +10,9 @@ namespace JwtSample.Identity.Users;
 
 internal sealed class UserService : IUserService
 {
-    private readonly Data.DataContext _dataContext;
+    private readonly DataContext _dataContext;
 
-    public UserService(Data.DataContext dataContext)
+    public UserService(DataContext dataContext)
     {
         _dataContext = dataContext;
     }
