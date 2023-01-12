@@ -9,7 +9,7 @@ public interface IUserService : ITransientService
 
     Task<List<UserDetailDto>> GetAsync();
 
-    Task<string> CreateAsync(UserDto request);
+    Task CreateAsync(UserDto request);
 
     Task<string> UpdateAsync(UserDto request, string username);
 

@@ -21,13 +21,13 @@ public class TokensController : ControllerBase
 
     [HttpPost("refresh-token")]
     [AllowAnonymous]
-    [OpenApiOperation("Request an access token using the refresh token.", "Accepts POST requests containing an access token with a refresh token. On success,  new JWT access and refresh tokens are returned.")]
+    [OpenApiOperation("Request an access token using the refresh token.", "Accepts POST requests containing an access token with a refresh token. On success, new JWT access and refresh tokens are returned.")]
     public Task<RefreshTokenResponse> RefreshAsync(RefreshTokenRequest request)
         => _tokenService.RefreshTokenAsync(request, GetIpAddress());
 
     [HttpPost("revoke-token")]
     [AllowAnonymous]
-    [OpenApiOperation("Request to revoke the refresh token using the access token.", "Accepts POST requests containing an access token. On success, the refresh token is revoked and can no longer be used to generate new JWT access tokens.")]
+    [OpenApiOperation("Request to revoke the refresh token using the access token.", "Accepts POST requests containing an access token. On success, the refresh token is revoked and no longer be used to generate new JWT access tokens.")]
     public Task RevokeAsync(RevokeTokenRequest request)
         => _tokenService.RevokeTokenAsync(request);
 

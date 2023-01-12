@@ -32,7 +32,6 @@ try
 
     var app = builder.Build();
     app.UseExceptionMiddleware();
-    app.UseHttpsRedirection();
     app.UseAuthentication();
     app.UseAuthorization();
     app.UseOpenApiDocumentation();

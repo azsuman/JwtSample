@@ -17,7 +17,7 @@ internal sealed class UserService : IUserService
         _dataContext = dataContext;
     }
 
-    public async Task<string> CreateAsync(UserDto request)
+    public async Task CreateAsync(UserDto request)
     {
         if (await _dataContext.Users.FindAsync(request.UserName) is not null)
         {
@@ -30,8 +30,6 @@ internal sealed class UserService : IUserService
 
         _dataContext.Users.Add(user);
         await _dataContext.SaveChangesAsync();
-
-        return $"User {request.UserName} Created.";
     }
 
     public async Task<string> DeleteAsync(string userName)
@@ -43,7 +41,7 @@ internal sealed class UserService : IUserService
         _dataContext.Users.Remove(user);
         await _dataContext.SaveChangesAsync();
 
-        return $"User {userName} Deleted.";
+        return $"User '{userName}' Successfully Deleted.";
     }
 
     public async Task<UserDetailDto> GetAsync(string userName)
@@ -73,7 +71,7 @@ internal sealed class UserService : IUserService
 
         await _dataContext.SaveChangesAsync();
 
-        return $"User {userName} Unlocked.";
+        return $"User '{userName}' Successfully Unlocked.";
     }
 
     public async Task<string> UpdateAsync(UserDto request, string username)
@@ -89,6 +87,6 @@ internal sealed class UserService : IUserService
 
         await _dataContext.SaveChangesAsync();
 
-        return $"User {username} Updated.";
+        return $"User '{username}' Successfully Updated.";
     }
 }

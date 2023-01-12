@@ -2,6 +2,7 @@
 using JwtSample.Identity.Users;
 using JwtSample.Middleware;
 using Microsoft.AspNetCore.Mvc;
+using NSwag.Annotations;
 
 namespace JwtSample.Controllers.User;
 
@@ -17,6 +18,7 @@ public class UsersController : ControllerBase
     }
 
     [HttpGet]
+    [OpenApiOperation("List all users.", "")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<ActionResult<List<UserDetailDto>>> Get()
     {
@@ -24,6 +26,7 @@ public class UsersController : ControllerBase
     }
 
     [HttpGet("{username}")]
+    [OpenApiOperation("Get a user's details.", "")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(UserDto))]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<UserDetailDto>> Get([FromRoute] string username)
@@ -32,6 +35,7 @@ public class UsersController : ControllerBase
     }
 
     [HttpPost]
+    [OpenApiOperation("Creates a new user.", "")]
     [ProducesResponseType(StatusCodes.Status201Created)]
     public async Task<IActionResult> Post([FromBody] UserDto user)
     {
@@ -40,6 +44,7 @@ public class UsersController : ControllerBase
     }
 
     [HttpPut("{username}")]
+    [OpenApiOperation("Update a user profile.", "")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<string>> Put([FromBody] UserDto user, string username)
@@ -52,10 +57,20 @@ public class UsersController : ControllerBase
     }
 
     [HttpDelete("{username}")]
+    [OpenApiOperation("Delete a user by username.", "")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Delete(string username)
     {
         return Ok(await _userService.DeleteAsync(username));
+    }
+
+    [HttpPatch("{username}/unlock")]
+    [OpenApiOperation("Unlock a user by username.", "")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> Unlock(string username)
+    {
+        return Ok(await _userService.UnlockAsync(username));
     }
 }
