@@ -16,20 +16,20 @@ public class TokensController : ControllerBase
     [HttpPost]
     [AllowAnonymous]
     [OpenApiOperation("Request an access token using credentials.", "Accepts POST requests containing a username and password in the body. On success, a JWT access and refresh tokens are returned.")]
-    public Task<TokenResponse> GetTokenAsync(TokenRequest request)
-        => _tokenService.GetTokenAsync(request, GetIpAddress());
+    public async Task<TokenResponse> GetTokenAsync(TokenRequest request)
+        => await _tokenService.GetTokenAsync(request, GetIpAddress());
 
     [HttpPost("refresh-token")]
     [AllowAnonymous]
     [OpenApiOperation("Request an access token using the refresh token.", "Accepts POST requests containing an access token with a refresh token. On success, new JWT access and refresh tokens are returned.")]
-    public Task<RefreshTokenResponse> RefreshAsync(RefreshTokenRequest request)
-        => _tokenService.RefreshTokenAsync(request, GetIpAddress());
+    public async Task<RefreshTokenResponse> RefreshAsync(RefreshTokenRequest request)
+        => await _tokenService.RefreshTokenAsync(request, GetIpAddress());
 
     [HttpPost("revoke-token")]
     [AllowAnonymous]
     [OpenApiOperation("Request to revoke the refresh token using the access token.", "Accepts POST requests containing an access token. On success, the refresh token is revoked and no longer be used to generate new JWT access tokens.")]
-    public Task RevokeAsync(RevokeTokenRequest request)
-        => _tokenService.RevokeTokenAsync(request);
+    public async Task RevokeAsync(RevokeTokenRequest request)
+        => await _tokenService.RevokeTokenAsync(request);
 
     private string GetIpAddress() =>
         Request.Headers.ContainsKey("X-Forwarded-For")
