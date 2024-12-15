@@ -8,8 +8,8 @@ namespace JwtSample.Middleware;
 
 internal class ExceptionMiddleware : IMiddleware
 {
-    private const string _responseTemplate = "Response({correlationId}): {{Response Body: {Message}}}";
-    private const string _defaultMessage = "Internal Server Error.";
+    private const string ResponseTemplate = "Response({correlationId}): {{Response Body: {Message}}}";
+    private const string DefaultMessage = "Internal Server Error.";
 
     private readonly ISerializerService _jsonSerializer;
     private readonly string _correlationId;
@@ -32,19 +32,19 @@ internal class ExceptionMiddleware : IMiddleware
         {
             var baseException = exception.GetBaseException();
 
-            (var Message, var StatusCode) = baseException switch
+            var (message, statusCode) = baseException switch
             {
-                JwtSampleException e when e.Message is not null => (e.Message, e.StatusCode),
-                _ => (_defaultMessage, HttpStatusCode.InternalServerError)
+                JwtSampleException e when true => (e.Message, e.StatusCode),
+                _ => (DefaultMessage, HttpStatusCode.InternalServerError)
             };
 
             if (!context.Response.HasStarted)
             {
                 context.Response.ContentType = "application/json";
-                context.Response.StatusCode = (int)StatusCode;
+                context.Response.StatusCode = (int)statusCode;
 
-                Log.Error(_responseTemplate, _correlationId, baseException.Message);
-                await context.Response.WriteAsync(_jsonSerializer.Serialize(new ErrorResult() { Message = Message }));
+                Log.Error(ResponseTemplate, _correlationId, baseException.Message);
+                await context.Response.WriteAsync(_jsonSerializer.Serialize(new ErrorResult() { Message = message }));
             }
             else
             {

@@ -15,7 +15,7 @@ namespace JwtSample.Identity.Tokens;
 
 internal sealed class TokenService : ITokenService
 {
-    public const string IpAddress = "ipAddress";
+    private const string IpAddress = "ipAddress";
     private readonly DataContext _dataContext;
     private readonly SecuritySettings _securitySettings;
     private readonly JwtSettings _jwtSettings;
@@ -65,7 +65,7 @@ internal sealed class TokenService : ITokenService
         if (++user.FailedLoginCount >= _securitySettings.MaximumPasswordFailure)
         {
             user.IsLockedOut = true;
-            user.DateLockedout = DateTime.Now;
+            user.DateLockedOut = DateTime.Now;
         }
 
         _dataContext.Users.Update(user);
@@ -219,7 +219,7 @@ internal sealed class TokenService : ITokenService
     private async Task LockAsync(User user)
     {
         user.IsLockedOut = true;
-        user.DateLockedout = DateTime.Now;
+        user.DateLockedOut = DateTime.Now;
         _dataContext.Update(user);
         _ = await _dataContext.SaveChangesAsync();
     }

@@ -33,6 +33,6 @@ public class TokensController : ControllerBase
 
     private string GetIpAddress() =>
         Request.Headers.ContainsKey("X-Forwarded-For")
-            ? Request.Headers["X-Forwarded-For"].ToString() ?? "N/A"
+            ? Request.Headers["X-Forwarded-For"].ToString()
             : HttpContext.Connection.RemoteIpAddress?.MapToIPv4().ToString() ?? "N/A";
 }

@@ -5,15 +5,17 @@ namespace JwtSample.Entities;
 public class User
 {
     [Key]
-    public string UserName { get; set; } = default!;
+    [MaxLength(20)]
+    public string UserName { get; init; } = null!;
 
     public byte[] PasswordHash { get; set; }
 
     public byte[] PasswordSalt { get; set; }
 
-    public string RefreshToken { get; set; } = default!;
+    [MaxLength(256)]
+    public string RefreshToken { get; set; } = null!;
 
-    public DateTime TokenCreated { get; set; }
+    public DateTime TokenCreated { get; init; }
 
     public DateTime? TokenExpiration { get; set; }
 
@@ -25,11 +27,11 @@ public class User
 
     public DateTime? DateLoggedIn { get; set; }
 
-    public DateTime? DatePwdChanged { get; set; }
+    public DateTime? DatePwdChanged { get; init; }
 
-    public DateTime DateCreated { get; set; }
+    public DateTime DateCreated { get; init; }
 
-    public DateTime? DateLockedout { get; set; }
+    public DateTime? DateLockedOut { get; set; }
 
     public User()
     {

@@ -13,8 +13,8 @@ public class ErrorResult
     {
         Message = statusCode switch
         {
-            HttpStatusCode s when s.Equals(HttpStatusCode.BadRequest) => "The request is incorrect or corrupt, and the server can't understand it.",
-            HttpStatusCode s when s.Equals(HttpStatusCode.Unauthorized) => "The request lacks valid permission for the target resource.",
+            HttpStatusCode.BadRequest => "The request is incorrect or corrupt, and the server can't understand it.",
+            HttpStatusCode.Unauthorized => "The request lacks valid permission for the target resource.",
             _ => "An unspecified error occurs"
         };
     }

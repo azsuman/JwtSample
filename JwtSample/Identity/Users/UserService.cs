@@ -80,7 +80,7 @@ internal sealed class UserService : IUserService
 
         _ = user ?? throw new UserNotFoundException();
 
-        CreatePasswordHash(request.Password, out byte[] passwordHash, out byte[] passwordSalt);
+        CreatePasswordHash(request.Password, out var passwordHash, out var passwordSalt);
 
         user.PasswordHash = passwordHash;
         user.PasswordSalt = passwordSalt;
