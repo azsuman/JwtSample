@@ -55,13 +55,11 @@ internal sealed class TokenService : ITokenService
                 throw new NewUserInactiveDaysException(_securitySettings.NewUserInactiveDays);
             }
 
-            if (user.DateLoggedIn?.AddDays(_securitySettings.RegularUserInactiveDays) < DateTime.Now)
-            {
-                await LockAsync(user);
-                throw new RegularUserInactiveDaysException(_securitySettings.RegularUserInactiveDays);
-            }
-
-            return await GenerateTokensAndUpdateUser(user, ipAddress);
+            if (!(user.DateLoggedIn?.AddDays(_securitySettings.RegularUserInactiveDays) < DateTime.Now))
+                return await GenerateTokensAndUpdateUser(user, ipAddress);
+            
+            await LockAsync(user);
+            throw new RegularUserInactiveDaysException(_securitySettings.RegularUserInactiveDays);
         }
 
         if (++user.FailedLoginCount >= _securitySettings.MaximumPasswordFailure)
@@ -113,14 +111,14 @@ internal sealed class TokenService : ITokenService
         }
 
         user.RefreshToken = string.Empty;
-        user.TokenExpiration = default;
+        user.TokenExpiration = null;
         _dataContext.Update(user);
         await _dataContext.SaveChangesAsync();
     }
 
     private async Task<TokenResponse> GenerateTokensAndUpdateUser(User user, string ipAddress)
     {
-        var (Token, Expires) = GenerateJwt(user, ipAddress);
+        var (token, expires) = GenerateJwt(user, ipAddress);
 
         user.RefreshToken = GenerateRefreshToken();
         user.TokenExpiration = DateTime.UtcNow.AddDays(_jwtSettings.RefreshTokenExpirationInDays);
@@ -129,12 +127,12 @@ internal sealed class TokenService : ITokenService
         _dataContext.Update(user);
         await _dataContext.SaveChangesAsync();
 
-        return new TokenResponse(Token, user.RefreshToken, Expires, user.TokenExpiration ?? default);
+        return new TokenResponse(token, user.RefreshToken, expires, user.TokenExpiration ?? default);
     }
 
     private async Task<RefreshTokenResponse> GenerateRefreshTokensAndUpdateUser(User user, string ipAddress)
     {
-        var (Token, Expires) = GenerateJwt(user, ipAddress);
+        var (token, expires) = GenerateJwt(user, ipAddress);
 
         user.RefreshToken = GenerateRefreshToken();
         user.TokenExpiration = DateTime.UtcNow.AddDays(_jwtSettings.RefreshTokenExpirationInDays);
@@ -143,7 +141,7 @@ internal sealed class TokenService : ITokenService
         _dataContext.Update(user);
         await _dataContext.SaveChangesAsync();
 
-        return new RefreshTokenResponse(Token, user.RefreshToken, Expires, user.TokenExpiration ?? default);
+        return new RefreshTokenResponse(token, user.RefreshToken, expires, user.TokenExpiration ?? default);
     }
 
     private (string Token, DateTime Expires) GenerateJwt(User user, string ipAddress)
